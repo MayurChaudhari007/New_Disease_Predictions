@@ -1,0 +1,5 @@
+[tool.pyrefly]
+venvPath = "ml-service"
+venv = "venv"
+pythonExecutable = "ml-service/venv/Scripts/python.exe"
+extraPaths = ["ml-service"]
