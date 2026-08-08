@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import api from '../api/axios';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -16,9 +17,11 @@ export const AuthProvider = ({ children }) => {
                     setUser(res.data.user);
                 } catch (error) {
                     console.error("Failed to load user:", error);
-                    setToken(null);
-                    setUser(null);
-                    localStorage.removeItem('token');
+                    if (error.response && error.response.status === 401) {
+                        setToken(null);
+                        setUser(null);
+                        localStorage.removeItem('token');
+                    }
                 }
             }
             setLoading(false);

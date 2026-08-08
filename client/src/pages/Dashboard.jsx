@@ -17,7 +17,7 @@ const Dashboard = () => {
         // Sort newest first
         const sortedReports = res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setReports(sortedReports);
-      } catch (err) {
+      } catch {
         setError('Failed to load dashboard data.');
       } finally {
         setLoading(false);

@@ -1,7 +1,8 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
-// Get base URL from env or use default fallback for local dev
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+// Get base URL strictly from Vite environment variable
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
     baseURL: BASE_URL,
@@ -24,17 +25,24 @@ api.interceptors.request.use(
     }
 );
 
-// Response Interceptor to handle global errors (e.g., 401 Unauthorized)
+// Response Interceptor to handle global errors
 api.interceptors.response.use(
     (response) => {
         return response;
     },
     (error) => {
-        if (error.response && error.response.status === 401) {
+        if (!error.response) {
+            toast.error('Network error. Is the backend offline?');
+        } else if (error.response.status === 401) {
             // Auto logout if 401 response returned from api
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/login';
+            if (localStorage.getItem('token')) {
+                toast.error('Session expired. Please log in again.');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
+        } else if (error.response.status >= 500) {
+            toast.error('Internal Server Error. Please try again later.');
         }
         return Promise.reject(error);
     }

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { User, Lock, Trash2, AlertCircle, Loader2, Save, Calendar } from 'lucide-react';
+import toast from 'react-hot-toast';
 import api from '../api/axios';
 
 const Profile = () => {
@@ -47,9 +48,11 @@ const Profile = () => {
       const res = await api.put('/auth/profile', { name });
       setUser(res.data.user);
       setNameSuccess(true);
+      toast.success('Name updated successfully!');
       setIsEditingName(false);
       setTimeout(() => setNameSuccess(false), 3000);
     } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to update name');
       setNameError(err.response?.data?.error || 'Failed to update name');
     } finally {
       setNameLoading(false);
@@ -65,10 +68,12 @@ const Profile = () => {
     try {
       await api.put('/auth/password', { currentPassword, newPassword });
       setPasswordSuccess(true);
+      toast.success('Password updated successfully!');
       setCurrentPassword('');
       setNewPassword('');
       setTimeout(() => setPasswordSuccess(false), 3000);
     } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to update password');
       setPasswordError(err.response?.data?.error || 'Failed to update password');
     } finally {
       setPasswordLoading(false);
@@ -82,9 +87,11 @@ const Profile = () => {
 
     try {
       await api.delete('/auth/profile', { data: { password: deletePassword } });
+      toast.success('Account deleted successfully.');
       // Clear token and logout
       logout();
     } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to delete account');
       setDeleteError(err.response?.data?.error || 'Failed to delete account');
       setDeleteLoading(false);
     }

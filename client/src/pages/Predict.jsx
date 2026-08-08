@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Loader2, Stethoscope, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import api from '../api/axios';
 
 const Predict = () => {
@@ -26,7 +27,8 @@ const Predict = () => {
       try {
         const res = await api.get('/symptoms');
         setAllSymptoms(res.data.data || []);
-      } catch (err) {
+      } catch {
+        toast.error('Failed to load symptoms. Please refresh.');
         setError('Failed to load symptoms. Please try again.');
       } finally {
         setLoadingSymptoms(false);
@@ -60,6 +62,7 @@ const Predict = () => {
     setError(null);
 
     if (selectedSymptoms.length < 2) {
+      toast.error('Select at least two symptoms');
       setError('Please select at least two symptoms for an accurate prediction.');
       return;
     }
@@ -75,8 +78,10 @@ const Predict = () => {
       });
 
       // Redirect to the report detail page
+      toast.success('Prediction generated successfully!');
       navigate(`/report/${res.data.data._id}`);
     } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to generate prediction.');
       setError(err.response?.data?.error || 'Failed to generate prediction.');
       setIsSubmitting(false);
     }

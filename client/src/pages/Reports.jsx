@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Loader2, Search, FileText, Download, Trash2, AlertCircle, Calendar, User } from 'lucide-react';
+import toast from 'react-hot-toast';
 import api from '../api/axios';
 
 const Reports = () => {
@@ -26,7 +27,7 @@ const Reports = () => {
       const sortedReports = res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setReports(sortedReports);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Failed to load reports. Please try again.');
     } finally {
       setLoading(false);
@@ -38,9 +39,11 @@ const Reports = () => {
     setIsDeleting(true);
     try {
       await api.delete(`/reports/${deleteId}`);
+      toast.success('Report deleted successfully');
       setReports(reports.filter(r => r._id !== deleteId));
       setDeleteId(null);
-    } catch (err) {
+    } catch {
+      toast.error('Failed to delete report');
       setError('Failed to delete report. Please try again.');
     } finally {
       setIsDeleting(false);

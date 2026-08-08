@@ -1,23 +1,31 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
     try {
       await login(email, password);
+      toast.success('Successfully logged in!');
       navigate('/dashboard');
     } catch (err) {
+      toast.error(err.response?.data?.error || 'Login failed');
       setError(err.response?.data?.error || 'Login failed');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -56,7 +64,9 @@ const Login = () => {
               </button>
             </div>
           </div>
-          <button type="submit" className="btn-primary w-full">Login</button>
+          <button type="submit" disabled={isLoading} className="btn-primary w-full flex justify-center items-center gap-2">
+            {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Login'}
+          </button>
         </form>
         <p className="mt-4 text-center text-sm text-slate-600">
           Don't have an account? <Link to="/register" className="text-primary-600 hover:underline">Register here</Link>

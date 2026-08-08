@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { Loader2, Download, AlertTriangle, ArrowLeft, Stethoscope, Clock, User, FileText } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import api from '../api/axios';
 
 const ReportDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const location = useLocation();
   const reportRef = useRef();
 
@@ -43,6 +42,7 @@ const ReportDetail = () => {
         handleDownloadPDF();
       }, 500);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [report, loading, location.state]);
 
   const handleDownloadPDF = () => {
