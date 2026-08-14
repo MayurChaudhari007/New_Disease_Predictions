@@ -35,7 +35,7 @@ graph LR
 ### 1. Start the ML Service
 ```bash
 cd ml-service
-python -m venv venv
+python -m venv venv  or  py -3.12 -m venv venv 
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
@@ -44,7 +44,7 @@ uvicorn app.main:app --reload --port 8000
 ### 2. Start the Express Server
 ```bash
 cd server
-npm install
+npm install or npm i --force
 # Create a .env file based on .env.example
 npm run dev
 ```
@@ -52,13 +52,13 @@ npm run dev
 ### 3. Start the React Client
 ```bash
 cd client
-npm install
+npm install or npm i --force
 # Create a .env file based on .env.example
 npm run dev
 ```
 
 ## Environment Variables
-Refer to the `.env.example` files in each respective directory. 
+Refer to the `.env.example` files in each respective directory. (rename or make .env file) 
 
 ## Deployment
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for full instructions on how to deploy this stack to Vercel and MongoDB Atlas.
